@@ -2,7 +2,7 @@
 'use strict';
 
 var NwBuilder = require('nw-builder');
-var gulp = require('gulp');
+var gulp = require('gulp-help')(require('gulp'));
 var gutil = require('gulp-util');
 var del = require('del');
 
@@ -12,8 +12,6 @@ gulp.task('package', function () {
     var nw = new NwBuilder({
         version: manifest.nwjsVersion,
         files: './nwapp/**',
-        macIcns: './icons/icon.icns',
-        macPlist: {mac_bundle_id: 'myPkg'},
         platforms: [
             'win32', 'win64',
             'osx32', 'osx64',
@@ -32,23 +30,9 @@ gulp.task('package', function () {
     });
 });
 
-gulp.task('run', function (done) {
-    var builder = new NwBuilder({
-        version: manifest.nwjsVersion,
-        files: path.join(SOURCE_DIR, '**')
-    });
-
-    builder.on('log', gutil.log.bind(gutil, 'nw-builder:'));
-    builder.run().nodeify(done);
-});
-
 gulp.task('clean:package', function () {
     return del([
-        'build',
-        // here we use a globbing pattern to match everything inside the `mobile` folder
-        'dist/mobile/**/*',
-        // we don't want to clean this file though so we negate the pattern
-        '!dist/mobile/deploy.json'
+        'build'
     ]);
 });
 
@@ -61,4 +45,4 @@ gulp.task('clean:all', function () {
 
 gulp.task('clean', ['clean:package']);
 
-gulp.task('default', ['run']);
+gulp.task('default', ['help']);
